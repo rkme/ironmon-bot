@@ -33,7 +33,7 @@ function onMessageHandler (target, context, msg, self) {
   if (commandName === '!bst') {
     var keyword = msg.split(' ')[1]
     if (keyword.toLowerCase() in bst) {
-      client.say(target, bst[keyword]);
+      client.say(target, `${keyword} BST: ${bst[keyword]}`);
     } else {client.say(target, "No pokemon with that name found.")}
   } else if (commandName === '!terry') {
     client.say(target, 'RIP Terry :(');

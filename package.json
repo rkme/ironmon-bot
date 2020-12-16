@@ -1,5 +1,5 @@
 {
-  "name": "nubotthenummy",       
+  "name": "nubotthenummy",
   "version": "0.0.1",
   "description": "A simple bot to help out with some ironmon run info over at NumotTheNummy's channel.",
   "main": "bot.js",

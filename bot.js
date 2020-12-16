@@ -28,14 +28,9 @@ function onMessageHandler (target, context, msg, self) {
 
   // Remove whitespace from chat message
   const commandName = msg.split(' ')[0];
-  console.log(commandName)
 
   // If the command is known, let's execute it
-  if (commandName === '!d20') {
-    const num = rollDice(commandName);
-    client.say(target, `You rolled a ${num}.`);
-    console.log(`* Executed ${commandName} command`);
-  } else if (commandName === '!bst') {
+  if (commandName === '!bst') {
     var keyword = msg.split(' ')[1]
     if (keyword.toLowerCase() in bst) {
       client.say(target, bst[keyword]);

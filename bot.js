@@ -1,6 +1,5 @@
 const tmi = require('tmi.js');
-const bst = require('bst.json');
-console.log(bst)
+const bst = require('./bst.json');
 
 // Define configuration options
 const opts = {
@@ -28,7 +27,7 @@ function onMessageHandler (target, context, msg, self) {
   if (self) { return; } // Ignore messages from the bot
 
   // Remove whitespace from chat message
-  const commandName = msg.split('');
+  const commandName = msg.split(' ')[0];
   console.log(commandName)
 
   // If the command is known, let's execute it
@@ -37,11 +36,14 @@ function onMessageHandler (target, context, msg, self) {
     client.say(target, `You rolled a ${num}.`);
     console.log(`* Executed ${commandName} command`);
   } else if (commandName === '!bst') {
-    var keyword = msg.split(' ')[1];
-    console.log(keyword);
+    var keyword = msg.split(' ')[1]
+    if (keyword.toLowerCase() in bst) {
+      client.say(target, bst[keyword]);
+    } else {client.say(target, "No pokemon with that name found.")}
   } else if (commandName === '!terry') {
     client.say(target, 'RIP Terry :(');
   }
+}
 
 // Function called when the "dice" command is issued
 function rollDice () {

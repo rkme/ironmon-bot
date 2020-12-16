@@ -31,10 +31,11 @@ function onMessageHandler (target, context, msg, self) {
   // If the command is known, let's execute it
   if (commandName === '!d20') {
     const num = rollDice(commandName);
-    client.say(target, `You rolled a ${num}. Link: https://glitch.com/~twitch-chatbot`);
-    console.log(`* Executed ${commandName} command`);
-  } else {
-    console.log(`* Unknown command ${commandName}`);
+    client.say(target, 'You rolled a ${num}.');
+    console.log('* Executed ${commandName} command');
+  } else if (commandName === '!bst') {
+    var keyword = msg.split(' ')[1];
+    console.log(msg.split(' '));
   }
 }
 
@@ -46,5 +47,5 @@ function rollDice () {
 
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler (addr, port) {
-  console.log(`* Connected to ${addr}:${port}`);
+  console.log('* Connected to ${addr}:${port}');
 }

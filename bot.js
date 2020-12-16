@@ -1,5 +1,6 @@
 const tmi = require('tmi.js');
-const fs = require('fs');
+const bst = require('bst.json');
+console.log(bst)
 
 // Define configuration options
 const opts = {
@@ -37,10 +38,10 @@ function onMessageHandler (target, context, msg, self) {
     console.log(`* Executed ${commandName} command`);
   } else if (commandName === '!bst') {
     var keyword = msg.split(' ')[1];
-    
+    console.log(keyword);
   } else if (commandName === '!terry') {
-    
-}
+    client.say(target, 'RIP Terry :(');
+  }
 
 // Function called when the "dice" command is issued
 function rollDice () {

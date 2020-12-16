@@ -1,7 +1,7 @@
 {
-  "name": "twitch-chatbot",       
+  "name": "nubotthenummy",       
   "version": "0.0.1",
-  "description": "A simple app chatbot example. Using the command !echo will simply repeat the message.",
+  "description": "A simple bot to help out with some ironmon run info over at NumotTheNummy's channel.",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js"
@@ -14,12 +14,15 @@
     "node": "8.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/twitch-chatbot"
+    "url": "https://glitch.com/edit/#!/classy-wood-lady"
   },
   "license": "MIT",
   "keywords": [
     "twitch",
     "chatbots",
     "irc"
+    "ironmon"
+    "pokemon"
+    ""
   ]
 }

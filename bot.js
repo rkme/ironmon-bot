@@ -1,6 +1,7 @@
 const tmi = require('tmi.js');
 const bst = require('./bst.json');
 const express = require('express')
+const ss = require('string-similarity')
 
 // Using this script to keep_alive.py in node
 const app = express()
@@ -83,20 +84,26 @@ function onMessageHandler (target, context, msg, self) {
 // Finds keyword to a command by comparing to dict keys. Also finds multiword keywords
 // as long as the full name directly follows the commandName
 function findKeyword(message, dict) {
+    const keys = Object.keys(dict)
     const words = message.split(' ')  // Splits up all words in message 
     var i;
-    for (i = 1; i <= words.length; i++){
+    for (i = 2; i <= words.length; i++){
         var kw = words.slice(1,i).join(" ").toLowerCase();
-        if (kw in dict){
+        var match = ss.findBestMatch(kw, keys)
+        if (match.bestMatch.rating >= 0.65){
           // console.log(`Found keyword: ${kw}`);
-          return kw;
+          return match.bestMatch.target;
         }
-        else {continue}
+        else {
+          console.log(`Searched for ${kw}, closest match was:`)
+          console.log(match.bestMatch)}
     }
     // Only gets here if it message contains a valid command but not a valid keyword // directly after it.
     console.log(`No keyword found in ${message}.`)
     return false; // returns False if no keyword provided
 }
+
+
 
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler (addr, port) {

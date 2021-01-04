@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 var p = 8080; //unsure if this should be a different port
 app.listen(p, () => console.log(`Application listening on port ${p}!`))
 
-// Define configuration options
+// Define configuration options for the chatbot
 const opts = {
   identity: {
     username: process.env.BOT_USERNAME,
@@ -46,7 +46,6 @@ const opts = {
   connection: {
     reconnect: true
   }
-  
 };
 
 
@@ -64,23 +63,31 @@ client.connect();
 
 
 // Called every time a message comes in
+// Currently checks each message for a command and then uses a series of if-statements to determine what action to take. Ugly but it works. Will eventually implement more elegantly.
 function onMessageHandler (target, context, msg, self) {
   if (self) { return; } // Ignore messages from the bot
 
-
-  // Remove whitespace from chat message
-  const commandName = msg.split(' ')[0];
-  // const keyword = msg.split(' ').slice(1).join(" ")  // Deprecated static entry
-
+  // Remove whitespace from chat message and convert command to lowercase
+  const commandName = msg.split(' ')[0].toLowerCase();
+  const user = context["username"].toLowerCase()
 
   // If the command is known, let's execute it
-  if (commandName.toLowerCase() === '!bst') {
+  if (commandName === '!bst') {
     const keyword = findKeyword(msg, bst)
     if (keyword && keyword.toLowerCase() in bst) {
-      console.log(`${context["username"]}: ${msg} (found ${bst[keyword]})`)
-      var name = keyword.charAt(0).toUpperCase() + keyword.slice(1); // Capitalize name
-      client.say(target, `${name} BST: ${bst[keyword]}`);
+      console.log(`${context["username"]}: ${msg} (found ${bst[keyword]})\n`)
+      var poke = keyword.charAt(0).toUpperCase() + keyword.slice(1); // Capitalize name
+      client.say(target, `${poke} BST: ${bst[keyword]}`);
     } else {client.say(target, "No pokemon with that name found.")}
+
+  } else if (commandName === '!skub') {
+    var position = "POSITION"
+    if ( setTeam(user) ) {
+      position = "anti"
+    } else {
+      position = "pro"
+    }
+    client.say(target, `@${user}, you are ${position}-skub.`)
   } else if (commandName === '!terry') {
     client.say(target, 'RIP Terry :(');
   }
@@ -96,9 +103,9 @@ function findKeyword(message, dict) {
     for (i = 2; i <= words.length; i++){
         var kw = words.slice(1,i).join(" ").toLowerCase();
         var [m, r] = findBestMatch(kw, keys)
-        const minRating = 0.80
+        const minRating = 0.90
         if (r >= minRating){ 
-          console.log(`Found keyword: ${kw} as ${m}, with a rating of ${r}.\n`);
+          console.log(`Found keyword: ${kw} as ${m}, with a rating of ${r}.`);
           return m;
         }
         else {
@@ -119,6 +126,18 @@ function findBestMatch(keyword, keys){
   // console.log(highestRating)
   var [match, rating] = [keys[ratedKeys.indexOf(highestRating)], highestRating]
   return [match, rating]
+}
+
+
+// Adds up the ASCII codes comprising a username and sets team based on whether or not it's even or odd. Not super complex and someone could easily reverse engineer this, but it's a pointless sorter anyway so there is no inherent reason to make this based off a secret hash seed.
+function setTeam(name){
+  // converts string to array of character codes of each string
+  const vals = Array.prototype.map.call(name, char => {return char.charCodeAt(0)})
+
+  // reduces character codes to a single sum value, starting from 0
+  const sum = vals.reduce((a,b) => a + b, 0)
+
+  return sum%2 // returns 0 if even, 1 if odd.
 }
 
 

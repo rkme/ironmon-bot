@@ -6,7 +6,7 @@ Currently only support 2 commands:
 
 * !bst pokemonName spits out the combined Base Stat Total of pokemonName.
   * Currently works with multi-word names (looking at you mr. mime)
-  * Currently works with mispelled names (to a limit. Picks highest Sørensen–Dice coefficient amongst all known keys and checks that it's over 0.7 before spitting it back)
+  * Currently works with mispelled names (to a limit. Picks highest ~~Sørensen–Dice coefficient~~ Jaro-winkler rating amongst all known keys and checks that it's over 0.8 before spitting it back)
   * Need to fix unicode support for the nidorans and flabebe (currently I've added entries with non unicode versions of the names (e.g. nidoran male and nidoran female). As the db fills out with more info, however, this will be made more robust with multiple accepted keys for a single entry)
 
 * !terry mourns Terry :(

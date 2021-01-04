@@ -9,6 +9,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "http": "^0.0.0",
+    "jaro-winkler": "^0.2.8",
     "string-similarity": "^4.0.3",
     "tmi": "^2.0.0",
     "tmi.js": "^1.5.0"

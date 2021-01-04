@@ -1,7 +1,7 @@
 const tmi = require('tmi.js');
 const bst = require('./bst.json');
 const express = require('express')
-const ss = require('string-similarity')
+const jw = require('jaro-winkler')
 
 // Using this script to keep_alive.py in node
 const app = express()
@@ -49,23 +49,29 @@ const opts = {
   
 };
 
+
 // Create a client with our options
 const client = new tmi.client(opts);
+
 
 // Register our event handlers (defined below)
 client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
 
+
 // Connect to Twitch:
 client.connect();
+
 
 // Called every time a message comes in
 function onMessageHandler (target, context, msg, self) {
   if (self) { return; } // Ignore messages from the bot
 
+
   // Remove whitespace from chat message
   const commandName = msg.split(' ')[0];
   // const keyword = msg.split(' ').slice(1).join(" ")  // Deprecated static entry
+
 
   // If the command is known, let's execute it
   if (commandName.toLowerCase() === '!bst') {
@@ -74,12 +80,12 @@ function onMessageHandler (target, context, msg, self) {
       console.log(`${context["username"]}: ${msg} (found ${bst[keyword]})`)
       var name = keyword.charAt(0).toUpperCase() + keyword.slice(1); // Capitalize name
       client.say(target, `${name} BST: ${bst[keyword]}`);
-    } else {client.say(target, "No pokemon with that name found.")
-            console.log(`Failed BST search: ${msg}`)}
+    } else {client.say(target, "No pokemon with that name found.")}
   } else if (commandName === '!terry') {
     client.say(target, 'RIP Terry :(');
   }
 }
+
 
 // Finds keyword to a command by comparing to dict keys. Also finds multiword keywords
 // as long as the full name directly follows the commandName
@@ -89,20 +95,31 @@ function findKeyword(message, dict) {
     var i;
     for (i = 2; i <= words.length; i++){
         var kw = words.slice(1,i).join(" ").toLowerCase();
-        var match = ss.findBestMatch(kw, keys)
-        if (match.bestMatch.rating >= 0.65){
-          // console.log(`Found keyword: ${kw}`);
-          return match.bestMatch.target;
+        var [m, r] = findBestMatch(kw, keys)
+        const minRating = 0.80
+        if (r >= minRating){ 
+          console.log(`Found keyword: ${kw} as ${m}, with a rating of ${r}.\n`);
+          return m;
         }
         else {
-          console.log(`Searched for ${kw}, closest match was:`)
-          console.log(match.bestMatch)}
+          console.log(`Searched for ${kw}, closest match was: ${m}
+          with a rating of ${r}.\n`)}
     }
-    // Only gets here if it message contains a valid command but not a valid keyword // directly after it.
-    console.log(`No keyword found in ${message}.`)
+    // Only gets here if message contains a valid command but not a valid keyword directly after it.
+    console.log(`No keyword found in ${message}.\n`)
     return false; // returns False if no keyword provided
 }
 
+
+//Finds the closest match to keyword by finding the highest jaro-winkler rating among a list of keys. keyword should be a string and keys should be a list of strings.
+function findBestMatch(keyword, keys){
+  var rating = 0 // will return undefined if keys is empty
+  let ratedKeys = keys.map(key => jw(keyword, key)) // rates entire list with jaro-winkler
+  let highestRating = Math.max(...ratedKeys) // using spread operator
+  // console.log(highestRating)
+  var [match, rating] = [keys[ratedKeys.indexOf(highestRating)], highestRating]
+  return [match, rating]
+}
 
 
 // Called every time the bot connects to Twitch chat

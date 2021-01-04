@@ -28,7 +28,4 @@ Planned additions
   * If item: What it does/sells for 
   * Should work similar to Pokemon Showdown /dt command
   
-* !team 
- * A dumb lil thing that *kind of* randomly assigns the caller of the command to be either pro-skub or anti-skub. Used to sow pointless discord amongst communities.
-
 * Maybe use a different string similarity detector as Sørensen–Dice gives some weird values sometimes. Possibly will use Jaro-Winkler or just good ol Damerau-Levenshtein, but requires testing first.
